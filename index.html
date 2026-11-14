@@ -79,6 +79,8 @@ footer{color:var(--muted);font-size:12px;line-height:1.6;margin:22px 2px}.notice
   function updateIntensity(){ $('intensityValue').textContent = \`\${intensity.value} / 10 · \${intensityNames[Number(intensity.value)-1]}\`; }
   intensity.addEventListener('input', updateIntensity); updateIntensity();
   const rules = [
+    {en:/\\byou are intelligent\\b/gi, slang:"you've got big-brain energy"},
+    {en:/\\byou are smart\\b/gi, slang:"you've got big-brain energy"},
     {en:/\bthat was really impressive\b/gi, slang:'bro absolutely ate'},
     {en:/\byou did a great job\b/gi, slang:'you understood the assignment'},
     {en:/\bi don't believe you\b/gi, slang:"that's cap, no way"},
