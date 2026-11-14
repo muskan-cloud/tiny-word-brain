@@ -1,31 +1,35 @@
-# Tiny Word Brain 2.0 — Slang Translator
+# Tiny Word Brain 3.0 🧠
 
-A lightweight, browser-only English ↔ slang translator with Gen Z, Gen Alpha, and mixed styles.
+A tiny, browser-based AI translator between plain English and Gen Z / Gen Alpha internet slang.
 
-## Run it locally
-Open `index.html` in a modern browser. No installation, build step, API key, or backend is needed.
+## What changed in 3.0
 
-## Features
-- English → slang and slang → plain-English directions
-- Gen Z, Gen Alpha, or mixed style
-- Ten intensity levels, from subtle to full brainrot
-- Phrase-aware substitution rules and examples
-- Copy result and use a translation as the next input
-- All processing happens locally in the browser; text is not uploaded
+- Uses the pretrained **Qwen3-0.6B** language model through Transformers.js.
+- Runs inference in the browser using WebGPU when available, with a CPU/WASM fallback.
+- Uses 4-bit quantized model weights to reduce download and memory requirements.
+- Supports English → slang and slang → English.
+- Offers Gen Z, Gen Alpha, mixed, and natural internet styles with 10 intensity levels.
+- Model files are cached by the browser after the first download.
+- No application backend or paid inference API is used.
 
-## Important limitation
-This version is a rule-based translator, not a trained neural language model. It uses hand-written phrase and vocabulary rules. Slang is contextual, regional, and constantly changing, so results are playful approximations rather than authoritative translations.
+## Run it
 
-## Free hosting with GitHub Pages
-1. Open this repository's **Settings → Pages**.
-2. Under **Build and deployment**, choose **Deploy from a branch**.
-3. Select branch **main** and folder **/(root)**, then click **Save**.
-4. Wait for the published URL shown on the Pages settings screen.
+Open the GitHub Pages site and tap **Load tiny AI model**. On first use, the browser downloads the model from Hugging Face. Keep the tab open until loading completes. Later visits should reuse the browser cache.
 
-The URL will be:
-`https://muskan-cloud.github.io/tiny-word-brain/`
+## Important limitations
 
-No server process is required: GitHub Pages serves the static website, and each visitor's browser runs the translator. GitHub Pages is free for public repositories on GitHub Free.
+- This is a small general-purpose language model prompted for slang translation; it is not fine-tuned specifically for slang.
+- It can misunderstand sarcasm, cultural references, or ambiguous phrases.
+- First-time model download can be substantial, and performance depends on the device. WebGPU is preferred; CPU/WASM fallback may be slower.
+- Model files are fetched from Hugging Face. The text entered for translation is processed locally in the browser after the model loads.
 
-## Customize the slang
-Open `index.html` and edit the `rules` array (English → slang) and `decode` array (slang → English) inside the script. Add longer phrases before shorter phrases so phrase matches get priority.
+## Technology
+
+- HTML, CSS and JavaScript
+- [Transformers.js](https://huggingface.co/docs/transformers.js)
+- [Qwen3-0.6B ONNX](https://huggingface.co/onnx-community/Qwen3-0.6B-ONNX)
+- GitHub Pages
+
+## Model license
+
+Check the model card and its license before redistributing or using the model commercially.
