@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#11131b">
+<title>Tiny Word Brain 2.0 — Slang Translator</title>
+<style>
+:root{color-scheme:dark;--bg:#11131b;--panel:#1b2030;--panel2:#121724;--line:#343d50;--text:#f5f6fb;--muted:#aab3c5;--accent:#a8e6cf;--pink:#f6b7d2}
+*{box-sizing:border-box}body{margin:0;padding:26px 16px 44px;background:radial-gradient(ellipse at top,#22243a 0,var(--bg) 55%);color:var(--text);font:16px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:900px;margin:auto}.hero{display:flex;align-items:center;gap:15px;margin-bottom:20px}.logo{font-size:42px}.eyebrow{color:var(--accent);font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}h1{font-size:clamp(2rem,6vw,3.1rem);line-height:1.05;margin:3px 0 8px}.sub{color:var(--muted);margin:0}
+.panel{background:rgba(27,32,48,.94);border:1px solid var(--line);border-radius:17px;padding:19px;margin:16px 0;box-shadow:0 12px 35px #0002}
+label{display:block;font-weight:700;margin-bottom:8px}.muted{color:var(--muted);font-size:13px}
+textarea{width:100%;min-height:145px;resize:vertical;background:var(--panel2);border:1px solid var(--line);border-radius:12px;color:var(--text);padding:14px;font:16px/1.55 system-ui,sans-serif;outline:none}textarea:focus,select:focus{border-color:var(--accent)}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:14px}.control{min-width:0}select{width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--line);padding:11px;border-radius:10px;font:inherit}
+.rangehead{display:flex;justify-content:space-between;gap:10px}.rangehead output{color:var(--accent);font-weight:750}input[type=range]{width:100%;accent-color:var(--accent);margin:10px 0}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}button{border:0;border-radius:11px;padding:11px 16px;font:700 14px system-ui;cursor:pointer;background:var(--accent);color:#102019}button.secondary{background:#343d50;color:var(--text)}button.ghost{background:transparent;border:1px solid var(--line);color:var(--text)}button:focus-visible{outline:2px solid white;outline-offset:3px}
+.result{white-space:pre-wrap;overflow-wrap:anywhere;min-height:90px;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:16px;font-size:19px}.result.empty{color:var(--muted);font-size:15px}
+.resultbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 0 9px}.tag{font-size:11px;letter-spacing:.1em;font-weight:800;color:var(--accent)}
+.examples{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.examples button{padding:8px 10px;font-size:12px}
+footer{color:var(--muted);font-size:12px;line-height:1.6;margin:22px 2px}.notice{border-left:3px solid var(--pink);padding:9px 12px;background:#f6b7d20d;color:var(--muted);font-size:13px;margin-top:14px}
+@media(max-width:600px){.controls{grid-template-columns:1fr}.panel{padding:15px}.hero{align-items:flex-start}}
+</style>
+</head>
+<body>
+<main>
+<header class="hero">
+  <div class="logo">🧠</div>
+  <div><div class="eyebrow">Tiny Word Brain · Version 2.0</div><h1>Slang Translator</h1><p class="sub">Plain English ↔ Gen Z ↔ Gen Alpha. Pick your chaos level.</p></div>
+</header>
+<section class="panel">
+  <div class="controls">
+    <div class="control"><label for="direction">Translation direction</label>
+      <select id="direction"><option value="to">English → Slang</option><option value="from">Slang → English</option></select>
+    </div>
+    <div class="control"><label for="dialect">Slang style</label>
+      <select id="dialect"><option value="mix">Mix Gen Z + Gen Alpha</option><option value="genz">Gen Z</option><option value="alpha">Gen Alpha</option></select>
+    </div>
+  </div>
+  <div style="margin-top:17px">
+    <div class="rangehead"><label for="intensity">Slang intensity</label><output id="intensityValue">5 / 10 · Balanced</output></div>
+    <input id="intensity" type="range" min="1" max="10" value="5">
+    <div class="muted">1 = subtle and natural · 10 = full internet chaos</div>
+  </div>
+  <div style="margin-top:17px">
+    <label for="source">Your text</label>
+    <textarea id="source" placeholder="Type something like: That was really impressive, and I agree with you."></textarea>
+    <div class="examples">
+      <button class="ghost example" data-text="That was really impressive. You did a great job.">Try: compliment</button>
+      <button class="ghost example" data-text="I am very tired and I need to go home.">Try: tired</button>
+      <button class="ghost example" data-text="I don't believe you. Are you serious?">Try: disbelief</button>
+    </div>
+  </div>
+  <div class="actions">
+    <button id="translate">✨ Translate</button>
+    <button id="swap" class="secondary">⇄ Swap direction</button>
+    <button id="clear" class="ghost">Clear</button>
+  </div>
+  <div class="notice">This is a lightweight, rule-based translator—not a trained neural network. Slang changes quickly and varies by community, region, and context. Review the result before using it.</div>
+</section>
+<section class="panel">
+  <div class="resultbar"><span class="tag">TRANSLATION</span><span class="muted" id="resultMeta">Waiting for text</span></div>
+  <div id="result" class="result empty" aria-live="polite">Your translated text will appear here.</div>
+  <div class="actions">
+    <button id="copy" class="secondary">Copy result</button>
+    <button id="useResult" class="ghost">Use as input</button>
+  </div>
+</section>
+<footer>
+  Tiny Word Brain 2.0 runs entirely in your browser. It sends no text to a server, uses no API key, and requires no backend. The translation engine uses phrase-aware substitutions, tone rules, and intensity levels; it does not learn from your input.
+</footer>
+</main>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const source = $('source'), result = $('result'), meta = $('resultMeta');
+  const intensity = $('intensity');
+  const intensityNames = ['Barely there','Subtle','Light','Casual','Balanced','Expressive','Spicy','Chaotic','Maximum','Full brainrot'];
+  function updateIntensity(){ $('intensityValue').textContent = \`\${intensity.value} / 10 · \${intensityNames[Number(intensity.value)-1]}\`; }
+  intensity.addEventListener('input', updateIntensity); updateIntensity();
+  const rules = [
+    {en:/\bthat was really impressive\b/gi, slang:'bro absolutely ate'},
+    {en:/\byou did a great job\b/gi, slang:'you understood the assignment'},
+    {en:/\bi don't believe you\b/gi, slang:"that's cap, no way"},
+    {en:/\bare you serious\??/gi, slang:'be so for real'},
+    {en:/\bi am very tired\b|\bi'm very tired\b/gi, slang:"i'm cooked"},
+    {en:/\bi am tired\b|\bi'm tired\b/gi, slang:"i'm lowkey cooked"},
+    {en:/\bthat looks really good\b/gi, slang:'that fit is fire'},
+    {en:/\bthat is really good\b|\bthat's really good\b/gi, slang:"that's actually fire"},
+    {en:/\bi agree with you\b/gi, slang:'real, I agree'},
+    {en:/\bi completely agree\b/gi, slang:'no cap, that's so real'},
+    {en:/\bi am excited\b|\bi'm excited\b/gi, slang:"I'm hyped"},
+    {en:/\bi am embarrassed\b|\bi'm embarrassed\b/gi, slang:"I'm fighting for my life"},
+    {en:/\bthat is embarrassing\b|\bthat's embarrassing\b/gi, slang:'that's cringe'},
+    {en:/\bvery attractive\b/gi, slang:'lowkey a whole snack'},
+    {en:/\bmy friend\b/gi, slang:'bestie'},
+    {en:/\bthat is amazing\b|\bthat's amazing\b/gi, slang:'that's goated'},
+    {en:/\bvery good\b/gi, slang:'so valid'},
+    {en:/\bvery bad\b/gi, slang:'actually tragic'},
+    {en:/\bi am leaving\b|\bi'm leaving\b/gi, slang:"I'm out"},
+    {en:/\bI am joking\b|\bI'm joking\b/gi, slang:'I’m just playing'},
+    {en:/\bI don't know\b/gi, slang:'idk'},
+    {en:/\bfor real\b/gi, slang:'fr'},
+    {en:/\bnot going to lie\b/gi, slang:'ngl'},
+    {en:/\bby the way\b/gi, slang:'btw'},
+    {en:/\bthat is cool\b|\bthat's cool\b/gi, slang:'that's chill'},
+    {en:/\bexcellent\b/gi, slang:'goated'},
+    {en:/\bawesome\b/gi, slang:'fire'},
+    {en:/\bembarrassing\b/gi, slang:'cringe'},
+    {en:/\bI am confused\b|\bI'm confused\b/gi, slang:"I'm lost"},
+    {en:/\bvery\b/gi, slang:'lowkey'}
+  ];
+  const decode = [
+    [/\bunderstood the assignment\b/gi,'did exactly the right thing'],
+    [/\babsolutely ate\b/gi,'did an excellent job'],
+    [/\bno cap\b/gi,'I am being honest'],
+    [/\bthat's cap\b|\bcap\b/gi,'that is a lie'],
+    [/\bbe so for real\b/gi,'are you serious'],
+    [/\bI'm cooked\b|\bi'm lowkey cooked\b/gi,'I am exhausted or in trouble'],
+    [/\blowkey\b/gi,'somewhat'],
+    [/\bhighkey\b/gi,'very much'],
+    [/\bfire\b/gi,'excellent'],
+    [/\bgoated\b/gi,'exceptionally good'],
+    [/\bvalid\b/gi,'good or acceptable'],
+    [/\bcringe\b/gi,'embarrassing or awkward'],
+    [/\bbestie\b/gi,'friend'],
+    [/\bfr\b/gi,'for real'],
+    [/\bngl\b/gi,'not going to lie'],
+    [/\bidk\b/gi,"I don't know"],
+    [/\brizz\b/gi,'charm or flirting ability'],
+    [/\bskibidi\b/gi,'a deliberately silly internet catchphrase'],
+    [/\bsigma\b/gi,'independent or impressively self-assured'],
+    [/\bgyatt\b/gi,'an exaggerated expression of surprise or admiration'],
+    [/\bfanum tax\b/gi,'playfully taking some of someone’s food'],
+    [/\bbrainrot\b/gi,'absurd, repetitive internet humor'],
+    [/\bmid\b/gi,'average or disappointing'],
+    [/\bslay\b/gi,'do something impressively'],
+    [/\bbet\b/gi,'okay or agreed'],
+    [/\bate\b/gi,'did an excellent job'],
+    [/\bthat's so real\b/gi,'I strongly relate or agree'],
+    [/\bcooked\b/gi,'in trouble or exhausted']
+  ];
+  function preserveCase(original, replacement) {
+    if (original.toUpperCase() === original) return replacement.toUpperCase();
+    if (original[0] && original[0] === original[0].toUpperCase()) return replacement[0].toUpperCase()+replacement.slice(1);
+    return replacement;
+  }
+  function applyRules(text, direction) {
+    let out = text;
+    if (direction === 'to') {
+      const level = Number(intensity.value);
+      const limit = level < 3 ? 8 : level < 6 ? 17 : rules.length;
+      rules.slice(0,limit).forEach(rule => { out = out.replace(rule.en, m => preserveCase(m, rule.slang)); });
+      if (level >= 4) out = out.replace(/\b(?:really|very)\s+(?=[a-z])/gi,'');
+      if (level >= 6) out = out.replace(/\b(?:that's|that is)\b/gi, "that's");
+      if (level >= 7 && !/\b(no cap|fr|ngl|lowkey|highkey)\b/i.test(out)) out += ' no cap.';
+      if (level >= 8) {
+        const d = $('dialect').value;
+        if (d !== 'genz') out += ' 💀';
+        if (d !== 'genz' && level >= 9) out += ' skibidi sigma';
+      }
+      if (level >= 10) out += ' 😭🔥';
+      if ($('dialect').value === 'alpha' && level >= 5 && !/\b(skibidi|sigma|rizz|gyatt)\b/i.test(out)) out += ' sigma';
+      if ($('dialect').value === 'mix' && level >= 6 && !/\b(ate|fire|cooked|goated|skibidi|sigma)\b/i.test(out)) out += ' 💀';
+    } else {
+      decode.forEach(([pattern,replacement]) => { out = out.replace(pattern, m => preserveCase(m,replacement)); });
+      out = out.replace(/\s{2,}/g,' ').replace(/\s+([,.!?])/g,'$1');
+    }
+    return out;
+  }
+  function translate(){
+    const text = source.value.trim();
+    if (!text) { result.textContent='Type some text first.'; result.classList.add('empty'); meta.textContent='No input'; return; }
+    const direction = $('direction').value;
+    const translated = applyRules(text,direction);
+    result.textContent = translated;
+    result.classList.remove('empty');
+    meta.textContent = direction === 'to' ? \`\${$('dialect').selectedOptions[0].text} · intensity \${intensity.value}/10\` : 'Plain-English explanation';
+  }
+  $('translate').addEventListener('click',translate);
+  $('swap').addEventListener('click',()=>{ $('direction').value = $('direction').value === 'to' ? 'from' : 'to'; translate(); });
+  $('clear').addEventListener('click',()=>{source.value='';result.textContent='Your translated text will appear here.';result.classList.add('empty');meta.textContent='Waiting for text';});
+  $('copy').addEventListener('click',async()=>{const text=result.classList.contains('empty')?'':result.textContent;if(!text)return;try{await navigator.clipboard.writeText(text);$('copy').textContent='Copied!';setTimeout(()=>$('copy').textContent='Copy result',1200);}catch(e){meta.textContent='Select and copy the text manually';}});
+  $('useResult').addEventListener('click',()=>{if(!result.classList.contains('empty')){source.value=result.textContent;$('direction').value=$('direction').value==='to'?'from':'to';source.focus();}});
+  document.querySelectorAll('.example').forEach(btn=>btn.addEventListener('click',()=>{source.value=btn.dataset.text;source.focus();}));
+  source.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter')translate();});
+})();
+</script>
+</body>
+</html>
